@@ -1,17 +1,17 @@
 import db
-from datetime import datetime,timedelta,timezone
+from datetime import datetime,timezone
 
 
-def UTF_time_converter(DatetimeStamp):
+def UTF_time_converter(DatetimeStamp):  # not in use 
     return DatetimeStamp.astimezone(timezone.utc)
 
-def diffrence_time(t1,t2):
-    return t1-t2
+def comparing_dates(published_timestamp):
+    return datetime_format_converter(published_timestamp)>(db.latest_time(None)[0][0])
 
+def datetime_format_converter(timestamp):
+    return (datetime.fromisoformat(timestamp))
 
-times=db.latest_time(None)
-print(times[0][0])
-print(UTF_time_converter(times[0][0]))
+#print(comparing_dates("2025-02-18T07:08:29.757659+00:00",db.latest_time(None)))
+#print(db.latest_time(None)[0][0])
 
-#print(datetime.now(timezone.utc))
       

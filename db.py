@@ -1,5 +1,4 @@
 import psycopg2 as pg
-
 import main
 
 url="https://hasjob.co/feed"
@@ -44,9 +43,17 @@ def insert(argument):
 @connection
 def latest_time(argument=None):
     query=f"""select published from posted_jobs order by published
-            asc limit 1"""
+            desc limit 1"""
     
     return query,()
+
+def head_and_upadte_tag(resource): # used for Isupdated function 
+    soup=main.connection(resource["url"]).resource["head_tag"]
+    return(soup,resource["update_tag"])
+
+def entris_list():
+    pass
+
 #l=main.to_json(main.connection(url))
 
 #for entry in l:
