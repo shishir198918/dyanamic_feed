@@ -6,6 +6,7 @@ def UTF_time_converter(DatetimeStamp):  # not in use
     return DatetimeStamp.astimezone(timezone.utc)
 
 def comparing_dates(published_timestamp):
+    #print(datetime_format_converter(published_timestamp),(db.latest_time(None)[0][0]))
     return datetime_format_converter(published_timestamp)>(db.latest_time(None)[0][0])
 
 def datetime_format_converter(timestamp):

@@ -12,14 +12,24 @@ def connection_url(url):
     request=Request(url,headers={"User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0"})
     return BS4(urlopen(request).read(),"xml")
  
-def extract_job_listing(entry):
-    job_listing=[]
-    for tag in entry.children:
+def extract_job(entry,updated_tag_name):
+    job_listing={}
+    for tag in entry.children: 
         if tag.name:
-            if tag.name=="content":
-                job_listing.append(parse_html_tag(tag))
-            else:
-                job_listing.append(tag.text)
+            if tag.name==updated_tag_name and not Isupdated(tag):
+                return None
+                #print(Isupdated(tag))
+            if tag.name in ["content"]:
+                job_listing['content']=parse_html_tag(tag)
+            if tag.name in ["title"]:
+                job_listing["title"]=tag.text
+            if tag.name in ["published"]:
+                job_listing["published"]=tag.text
+            if tag.name in ["link"]:
+                job_listing["link"]=tag.text
+            if tag.name in ["location"]:
+                job_listing["location"]=tag.text  
+
     return job_listing             
 
 
@@ -28,16 +38,11 @@ def parse_html_tag(tag):
 
 
 
-def Isupdated(head_tag,tag_name): # check whether content is new or not 
-    for tag in head_tag.children:
-        if tag.name:
-            
-            for tag1 in tag.next_siblings:
-                
-                if tag1.name==tag_name:
-                    return dates.comparing_dates(tag1.text)
+def Isupdated(update_tag): # check whether content is new or not 
+    return dates.comparing_dates(update_tag.text)
 
-def head_and_upadte_tag(resource,index): # used for Isupdated function
+
+def head_and_upadate_tag(resource,index): # used for Isupdated function
 
     soup=connection_url(resource[index]["url"])
     head_tag=resource[index]["head_tag"]
@@ -48,13 +53,16 @@ def head_and_upadte_tag(resource,index): # used for Isupdated function
     return(head_object,update_tag)
 
 
-
-# def extract_job_listings (parsed_xml):
-#     parsed_xml.entry.next_siblings
-#     pass
                              
-def extracted_job_lists
-# for tag in (head_and_upadte_tag(resource,2)[0]).next_siblings:    
-#     if tag.name:
-#         print(f"{tag.name}--> count{count}")
-#         count=count+1             
+def extracted_jobs(resource,index):
+    jobs=[]
+    head_tag,update_tag_name=head_and_upadate_tag(resource,index)
+    for entry_tag in head_tag.next_siblings:
+        if entry_tag.name:
+            jobs.append(extract_job(entry_tag,update_tag_name))
+    return jobs
+
+#soup=connection_url(resource[2]["url"]).entry
+#print(Isupdated(soup.published))        
+pprint(extracted_jobs(resource,2))
+             
