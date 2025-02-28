@@ -1,7 +1,10 @@
 import psycopg2 as pg
-import main
 
-url="https://hasjob.co/feed"
+
+
+#resource=[{"url":"https://remoteok.com/rss","head_tag":"","update_tag":""},{"url":"https://weworkremotely.com/remote-jobs.rss","head_tag":"","update_tag":""},{"url":"https://hasjob.co/feed","head_tag":"entry","update_tag":"published"}]
+
+
 
 def connection(fun):
     def Db_connect(argument):
@@ -47,13 +50,10 @@ def latest_time(argument=None):
     
     return query,()
 
-def head_and_upadte_tag(resource): # used for Isupdated function 
-    soup=main.connection(resource["url"]).resource["head_tag"]
-    return(soup,resource["update_tag"])
 
-def entris_list():
-    pass
 
+
+ 
 #l=main.to_json(main.connection(url))
 
 #for entry in l:

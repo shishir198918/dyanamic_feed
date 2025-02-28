@@ -1,34 +1,17 @@
 from urllib.request import urlopen,Request
 from bs4 import BeautifulSoup as BS4
 from pprint import pprint
-from datetime import datetime
 import dates
-import db
+
 
 
 resource=[{"url":"https://remoteok.com/rss","head_tag":"","update_tag":""},{"url":"https://weworkremotely.com/remote-jobs.rss","head_tag":"","update_tag":""},{"url":"https://hasjob.co/feed","head_tag":"entry","update_tag":"published"}]
 
-#resource=["https://remoteok.com/rss"]
 
-def connection(url):
+def connection_url(url):
     request=Request(url,headers={"User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0"})
-    #return urlopen(request).read()
-    #a = BS4(urlopen(request).read(),"xml")
     return BS4(urlopen(request).read(),"xml")
-
-
-
-def multiple_request(url_list):
-    for url in url_list:
-        print(connection(url))
-
-
-
-def extract_job_listings (parsed_xml):
-    entries=parsed_xml.entry.next_siblings
-    return [extract_job_listing(entry) for entry in entries  if entry.name] 
-
-
+ 
 def extract_job_listing(entry):
     job_listing=[]
     for tag in entry.children:
@@ -37,7 +20,6 @@ def extract_job_listing(entry):
                 job_listing.append(parse_html_tag(tag))
             else:
                 job_listing.append(tag.text)
-#    print(job_listing)
     return job_listing             
 
 
@@ -55,7 +37,24 @@ def Isupdated(head_tag,tag_name): # check whether content is new or not
                 if tag1.name==tag_name:
                     return dates.comparing_dates(tag1.text)
 
+def head_and_upadte_tag(resource,index): # used for Isupdated function
 
-#entry=connection(resource[2]["url"]).entry
-#print(Isupdated(entry,"published"))                                
-                    
+    soup=connection_url(resource[index]["url"])
+    head_tag=resource[index]["head_tag"]
+    head_object=soup.find(head_tag)
+    
+    update_tag=resource[index]["update_tag"]
+    
+    return(head_object,update_tag)
+
+
+
+# def extract_job_listings (parsed_xml):
+#     parsed_xml.entry.next_siblings
+#     pass
+                             
+def extracted_job_lists
+# for tag in (head_and_upadte_tag(resource,2)[0]).next_siblings:    
+#     if tag.name:
+#         print(f"{tag.name}--> count{count}")
+#         count=count+1             
