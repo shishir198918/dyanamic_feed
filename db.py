@@ -6,7 +6,7 @@ import psycopg2 as pg
 
 
 
-def connection(fun):
+def connection(fun)->None|list:
     def Db_connect(argument):
         try:
             conn=pg.connect(dbname="jobs",
@@ -43,12 +43,21 @@ def insert(argument):
 
     return query,values
 
+
+
+def acess_latest_time_from_query(fun)->str:
+    return lambda : fun(argument=None)[0][0]
+
+
+@acess_latest_time_from_query
 @connection
-def latest_time(argument=None):
+def latest_time(argument=None)->list:
     query=f"""select published from posted_jobs order by published
             desc limit 1"""
     
     return query,()
+#print(latest_time())
+
 
 
 
