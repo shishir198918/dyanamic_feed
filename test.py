@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 #from webdriver_manager.core.utils import ChromeType
 #
 # add headless Chrome option
-def Chrome_option():
+def Chrome_option()->object:
     options = webdriver.ChromeOptions()
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
@@ -25,5 +25,5 @@ def get_page_source(url):
     page_source=driver.page_source
     driver.quit()
     return page_source
-print(get_page_source("https://www.ycombinator.com/jobs"))
+print(type(Chrome_option()))
 
