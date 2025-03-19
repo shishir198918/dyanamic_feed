@@ -1,0 +1,9 @@
+
+{
+    "requests": [
+        {
+            "indexName": "WaaSPublicCompanyJob_created_at_desc_production",
+            "params": "query=&page=4&filters=&attributesToRetrieve=%5B%22company_id%22%5D&attributesToHighlight=%5B%5D&attributesToSnippet=%5B%5D&hitsPerPage=10&clickAnalytics=true&distinct=true"
+        }
+    ]
+}

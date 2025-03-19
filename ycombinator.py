@@ -30,7 +30,7 @@ def extract_json_job(url):
    return json.loads(parse_html_from_connection_url(url).\
           find("script",attrs={"type":"application/ld+json"}).string)
 
-#pprint(parse_html_connection_url(get_companies_link_list("https://www.ycombinator.com/jobs")[0]))
+#pprint(parse_html_from_connection_url(get_companies_link_list("https://www.ycombinator.com/jobs")[0]))
 
-#pprint(extract_json_job("https://www.ycombinator.com/companies/biorender/jobs/0JUJiit-staff-machine-learning-engineer-applied-scientist-ai-figure-generation"))
-#pprint(get_job_link_list(get_companies_link_list("https://www.ycombinator.com/jobs")))
+pprint(extract_json_job("https://www.ycombinator.com/companies/fieldguide/jobs/wlHhxce-senior-platform-engineer-infrastructure-security"))
+#pprint(get_jobs_link_list(get_companies_link_list("https://www.ycombinator.com/jobs")))
