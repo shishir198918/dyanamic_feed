@@ -77,5 +77,5 @@ def extract_jobs(resource:list,index:int)->dict:
     return jobs
 
 
-#pprint(parse_html_connection_url("https://www.ycombinator.com/jobs"))
+pprint(type(extract_jobs(resource,2)[0]))
              
