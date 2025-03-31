@@ -2,6 +2,7 @@ import requests
 import json 
 from datetime import datetime
 from pprint import pprint
+from threading import Thread
 
 
 def get_request_body(page_no:int)->dict:
@@ -28,8 +29,7 @@ def get_company_id(page_number=1):
         
         ids=json.dumps({"ids":\
                 [r.json()["results"][0]["hits"][lenght]["company_id"]\
-                for lenght in range(1)]})
-        print(page_number)    
+                for lenght in range(1)]})   
         return ids
     except Exception as e:
         print(f"Error: {e}")
@@ -42,9 +42,13 @@ def get_total_page_number(page_number):
 
 def get_companies_id():
     total_pages=get_total_page_number(1)
-    print(total_pages)
-    return [get_company_id(serial)\
-            for serial in range(1,total_pages)]
+
+    for page in range(1,total_pages):
+        
+        ids=get_company_id(page) # getting ids per page 
+        yield ids
+        
+            
 
 def fetch_company_jobs(ids):
     url="https://www.workatastartup.com/companies/fetch"
@@ -64,7 +68,8 @@ def get_job_heading(response,serial):
     return f"{response["companies"][0]["name"]}:{response["companies"][0]["jobs"][serial]["title"]}"
 
 def get_jobs_description(response,serial):
-    return f"{response["companies"][0]["jobs"][serial]}"
+    #print(type({"description":response["companies"][0]["jobs"][serial]}))
+    return {"description":response["companies"][0]["jobs"][serial]}
 
 def Is_updated(response,compare_date,serial):
     return (datetime.strptime(response["companies"][0]["jobs"][serial]["pretty_updated_at"],"%m/%d/%Y")>=compare_date)
@@ -72,12 +77,29 @@ def Is_updated(response,compare_date,serial):
 def extract_updated_company_jobs(comapny_id,compare_date):
     response=fetch_company_jobs(comapny_id)
     jobs=len(response["companies"][0]["jobs"])
+    
     return [{"title":get_job_heading(response,serial),"description":get_jobs_description(response,serial)} \
             for serial in range(jobs)\
             if Is_updated(response,compare_date,serial)]
 
-def extracted_all_jobs(id_list):
-     pass
+
+def extracted_all_jobs(compare_date):
+    total_pages=get_total_page_number(1)
+    ids=get_companies_id()
+    for _ in range(1,total_pages):
+        company_id=next(ids)
+        print(company_id)
+        next_id_thread=Thread(target=next,args=ids)
+        next_id_thread.start()   
+        yield extract_updated_company_jobs(company_id,compare_date)
+        print(company_id)
+        
+
+
+
+common_memory=extracted_all_jobs(datetime(2025,3,25,0,0))
+pprint(next(common_memory))      
+
 
 
 #pprint(job_update_date(fetch_company_jobs(get_companies_ids())))
@@ -85,5 +107,7 @@ def extracted_all_jobs(id_list):
 #print(datetime(2025, 3, 24, 0, 0)>datetime(2025, 3, 20, 0, 0))
 #print([Is_updated(date) for date in job_update_date(fetch_company_jobs(get_companies_ids(1,1)))])
 
-ids=json.dumps({"ids": [29042]})
-pprint(extract_updated_company_jobs(ids,datetime(2025,3,23,0,0)))
+#ids=json.dumps({"ids": [29042]})
+#pprint(extract_updated_company_jobs(ids,datetime(2025,3,23,0,0)))
+
+#print(type(extracted_all_jobs(datetime(2025,3,25,0,0))))
